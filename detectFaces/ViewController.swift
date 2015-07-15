@@ -45,21 +45,31 @@ class ViewController: UIViewController {
         }
         
         // init device input
-//        var error: NSErrorPointer = nil
-//        var deviceInput: AVCaptureInput = AVCaptureDeviceInput.deviceInputWithDevice(captureDevice, error: error) as AVCaptureInput
-        var deviceInput: AVCaptureInput = AVCaptureDeviceInput(captureDevice, error: error) as AVCaptureInput
+        //var error: NSErrorPointer = nil
+        var deviceInput : AVCaptureInput! = nil
+        do {
+            deviceInput = try AVCaptureDeviceInput(device: captureDevice) as AVCaptureInput
+        //let deviceInput: AVCaptureInput = try AVCaptureDeviceInput.deviceInputWithDevice(captureDevice) as AVCaptureInput
+        } catch let error as NSError {
+            print(error)
+            
+        }
+//        captureDevice = CameraViewController.device(AVMediaTypeVideo, position: AVCaptureDevicePosition.Back)
+//        var deviceInput: AVCaptureInput = AVCaptureDeviceInput(device: captureDevice, error: &error) as AVCaptureInput
         
         self.stillImageOutput = AVCaptureStillImageOutput()
         
         // init session
         self.session = AVCaptureSession()
         self.session.sessionPreset = AVCaptureSessionPresetPhoto
-        self.session.addInput(deviceInput as AVCaptureInput)
+        self.session.addInput(deviceInput as? AVCaptureInput)
         self.session.addOutput(self.stillImageOutput)
         
         // layer for preview
-//        var previewLayer: AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer.layerWithSession(self.session) as AVCaptureVideoPreviewLayer
-        var previewLayer: AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer(self.session) as AVCaptureVideoPreviewLayer
+            let previewLayer: AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer(session: self.session) as AVCaptureVideoPreviewLayer
+//        var previewLayer: AVCaptureVideoPreviewLayer = PreviewLayer! as AVCaptureVideoPreviewLayer
+//        self.stillImageOutput?.connectionWithMediaType(AVMediaTypeVideo).videoOrientation = layer.connection.videoOrientation
+        
         previewLayer.frame = self.view.bounds
         self.view.layer.addSublayer(previewLayer)
         
